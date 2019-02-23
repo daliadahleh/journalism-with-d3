@@ -24,22 +24,8 @@ d3.csv("data.csv").then(function(data) {
 
 	// cast types
     data.forEach(function(state) {
-      state.age = +state.age;
-      state.ageMoe = +state.ageMoe;
       state.healthcare = +state.healthcare;
-      state.healthcareHigh = +state.healthcareHigh;
-      state.healthcareLow = +state.healthcareLow;
-      state.id = +state.id;
-      state.income = +state.income;
-      state.incomeMoe = +state.incomeMoe;
-      state.obesity = +state.obesity;
-      state.obesityHigh = +state.obesityHigh;
-      state.obesityLow = +state.obesityLow;
       state.poverty = +state.poverty;
-      state.povertyMoe = +state.povertyMoe;
-      state.smokes = +state.smokes;
-      state.smokesHigh = +state.smokesHigh;
-      state.smokesLow = +state.smokesLow;
     });
 
     // scales
@@ -62,6 +48,17 @@ d3.csv("data.csv").then(function(data) {
 	chartGroup.append("g")
       .call(leftAxis);
 
+    chartGroup.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left + 40)
+      .attr("x", 0 - (height / 2) - 40)
+      .attr("dy", "1em")
+      .text("Lacks Healthcare (%)");
+
+    chartGroup.append("text")
+      .attr("transform", `translate(${width / 2 - 30}, ${height + margin.top + 30})`)
+      .text("In Poverty (%)");
+    
     // circles
     var circles = chartGroup.selectAll("g.circles");
 
@@ -73,7 +70,7 @@ d3.csv("data.csv").then(function(data) {
 
     circles.append("circle")
     	.attr("r", "15")
-   		.attr("fill", "blue")
+   		.attr("fill", "lightblue")
    		.attr("opacity", ".5");
 
    	circles.append("text")
@@ -84,6 +81,7 @@ d3.csv("data.csv").then(function(data) {
     // tool tip
     var toolTip = d3.tip()
       .attr("class", "tooltip")
+      .style("background", "orange")
       .offset([80, -60])
       .html(function(d) {
         return (`${d.state}<br>Poverty: ${d.poverty}<br>Healthcare: ${d.healthcare}`);
@@ -91,24 +89,11 @@ d3.csv("data.csv").then(function(data) {
 
     chartGroup.call(toolTip);
 
-    circlesGroup.on("click", function(data) {
+    circles.on("mouseover", function(data) {
       toolTip.show(data, this);
     })
       .on("mouseout", function(data, index) {
         toolTip.hide(data);
       });
 
-    // labels
-    chartGroup.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - margin.left + 40)
-      .attr("x", 0 - (height / 2))
-      .attr("dy", "1em")
-      .attr("class", "axisText")
-      .text("Healthcare (%)");
-
-    chartGroup.append("text")
-      .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
-      .attr("class", "axisText")
-      .text("Poverty (%)");
 });
